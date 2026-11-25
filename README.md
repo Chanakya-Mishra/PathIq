@@ -8,7 +8,7 @@ A fast, low-data, zero-login **Student Learning Dashboard**, **Multilingual Care
 - **Frontend:** Semantic HTML5, Lightweight Custom CSS (`~3.9 KB` gzipped), Modular Vanilla ES Modules, and Service Worker shell caching (`public/sw.js`).
 - **Core App Shell + JS + CSS:** `~30.6 KB` gzipped (`31,351` bytes).
 - **Full 4-Language Offline Bundle (`en`, `hi`, `ta`, `bn`):** `~66.3 KB` gzipped (`67,935` bytes).
-- **Backend:** Lightweight Node.js HTTP server (`server.js`) with gzip compression, `ETag` caching, per-IP rate limiting, and **server-side-only** Supabase + Gemini integrations (`0 KB` SDK overhead sent to the browser).
+- **Backend:** Vercel-ready Serverless Functions (`api/*.js`) + shared Web-API router (`lib/apiRouter.js`) + local Node server (`lib/localServer.js`) with gzip compression, `ETag` caching, rate limiting, and server-side-only Supabase + Gemini integrations (`0 KB` SDK overhead sent to the browser).
 
 ---
 
@@ -41,8 +41,13 @@ A fast, low-data, zero-login **Student Learning Dashboard**, **Multilingual Care
 
 ```text
 pathiq/
-├── server.js                      # HTTP server (gzip, ETag, rate limiting, REST API, /p/:code routing)
+├── vercel.json                    # Vercel CDN output (public/), /p/:code rewrite, function config
+├── api/                           # Vercel Serverless Functions (Web Request/Response handlers)
+│   ├── health.js, resources.js, guidance.js, doubt.js, feedback.js, report.js
+│   └── plans/ (index.js, [code].js)
 ├── lib/
+│   ├── apiRouter.js               # Shared Web API route handlers & validation
+│   ├── localServer.js             # Local development & test HTTP server (`npm start`)
 │   ├── doubtSolver.js             # @google/genai Interactions API + cache-aside + fallback solver
 │   ├── guidanceEngine.js          # Optional AI-enhanced career guidance adapter
 │   └── supabaseRepo.js            # Server-side Supabase repository with in-memory fallback
@@ -55,7 +60,7 @@ pathiq/
 │   ├── css/styles.css             # Lightweight responsive CSS + [data-lite="true"] rules
 │   ├── data/                      # Multilingual UI strings, career paths & free resources
 │   └── js/                        # Vanilla ES modules (dashboardView, qaView, directoryView, savedPlanView, etc.)
-└── tests/sanity.test.js           # Node test runner suite (15 tests across all features)
+└── tests/sanity.test.js           # Node test runner suite (16 tests across all features + Vercel Functions)
 ```
 
 ---
@@ -91,7 +96,7 @@ All Supabase credentials stay strictly on the Node.js server; never expose `SUPA
    ```
 3. Start the server (`npm start`) and check `GET /api/health`—it will report `"mode": "hybrid-ai"` and `"db": "supabase"` once both integrations are active.
 
-*(When deploying to Render, Railway, Fly.io, or a VPS, configure `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, and `GEMINI_API_KEY` in the platform's Environment Variables panel instead of committing `.env`.)*
+*(When deploying to **Vercel**, import the GitHub repo directly—`vercel.json` serves `public/` on the Edge CDN and routes `/api/*` to Vercel Functions. Add `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, and `GEMINI_API_KEY` in Vercel Project Settings → **Environment Variables**.)*
 
 ---
 

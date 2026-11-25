@@ -5,7 +5,7 @@ import zlib from 'node:zlib';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createAppServer } from '../server.js';
+import { createAppServer } from '../lib/localServer.js';
 import { createStore } from '../public/js/store.js';
 import { LOCALES, SUPPORTED_LANGS } from '../public/data/locales.js';
 import { RESOURCES } from '../public/data/resources.js';
@@ -630,4 +630,95 @@ test('Phase D Sanity: Student Dashboard stats, month calendar, studyDays store, 
   const html = await fs.readFile(path.join(ROOT_DIR, 'public/index.html'), 'utf8');
   assert.match(html, /id="view-dashboard"/);
   assert.match(html, /class="app-sidebar"/);
+});
+
+test('Phase E Sanity: Vercel Functions, vercel.json config, and no root server.js hijack', async () => {
+  const rootServerExists = await fs
+    .stat(path.join(ROOT_DIR, 'server.js'))
+    .then(() => true)
+    .catch(() => false);
+  assert.equal(rootServerExists, false, 'Root server.js must not exist so Vercel serves public/ + api/');
+
+  const vercelJson = JSON.parse(await fs.readFile(path.join(ROOT_DIR, 'vercel.json'), 'utf8'));
+  assert.equal(vercelJson.framework, null);
+  assert.equal(vercelJson.buildCommand, null);
+  assert.equal(vercelJson.outputDirectory, 'public');
+  assert.ok(vercelJson.rewrites.some((r) => r.source === '/p/:code' && r.destination === '/index.html'));
+
+  const pkg = JSON.parse(await fs.readFile(path.join(ROOT_DIR, 'package.json'), 'utf8'));
+  assert.equal(pkg.engines.node, '>=22.0.0');
+
+  const { GET: healthGet } = await import('../api/health.js');
+  const healthRes = await healthGet();
+  assert.equal(healthRes.status, 200);
+  const healthJson = await healthRes.json();
+  assert.equal(healthJson.ok, true);
+
+  const { GET: resourcesGet } = await import('../api/resources.js');
+  const resResp = await resourcesGet(new Request('https://example.vercel.app/api/resources?domain=tech&dataUsage=low'));
+  assert.equal(resResp.status, 200);
+  const resJson = await resResp.json();
+  assert.ok(resJson.resources.length >= 3);
+
+  const { POST: guidancePost } = await import('../api/guidance.js');
+  const guidResp = await guidancePost(
+    new Request('https://example.vercel.app/api/guidance', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: 'SQL data analyst', lang: 'en', weeklyHours: '10' })
+    })
+  );
+  assert.equal(guidResp.status, 200);
+  const guidJson = await guidResp.json();
+  assert.equal(guidJson.pathId, 'data-analyst-free');
+
+  const { POST: doubtPost } = await import('../api/doubt.js');
+  const doubtResp = await doubtPost(
+    new Request('https://example.vercel.app/api/doubt', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: 'What is semantic HTML?', lang: 'en' })
+    })
+  );
+  assert.equal(doubtResp.status, 200);
+  const doubtJson = await doubtResp.json();
+  assert.ok(doubtJson.answer.directAnswer.length > 0);
+
+  const { POST: createPlanPost } = await import('../api/plans/index.js');
+  const { GET: getPlanGet } = await import('../api/plans/[code].js');
+  const planCreateResp = await createPlanPost(
+    new Request('https://example.vercel.app/api/plans', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ lang: 'en', savedResourceIds: ['res-mdn'], completedSteps: {} })
+    })
+  );
+  assert.equal(planCreateResp.status, 201);
+  const createdPlan = await planCreateResp.json();
+  assert.match(createdPlan.code, /^[A-Z0-9]{6}$/);
+
+  const planGetResp = await getPlanGet(
+    new Request(`https://example.vercel.app/api/plans/${createdPlan.code}`)
+  );
+  assert.equal(planGetResp.status, 200);
+
+  const { POST: feedbackPost } = await import('../api/feedback.js');
+  const fbResp = await feedbackPost(
+    new Request('https://example.vercel.app/api/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ queryHash: 'h123', helpful: true, lang: 'en' })
+    })
+  );
+  assert.equal(fbResp.status, 201);
+
+  const { POST: reportPost } = await import('../api/report.js');
+  const rptResp = await reportPost(
+    new Request('https://example.vercel.app/api/report', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ resourceId: 'res-mdn', reason: 'Test check', lang: 'en' })
+    })
+  );
+  assert.equal(rptResp.status, 201);
 });

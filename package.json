@@ -3,14 +3,13 @@
   "version": "1.0.0",
   "description": "Lightweight, low-data, multilingual career guidance and 100% free learning resource web application.",
   "type": "module",
-  "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node lib/localServer.js",
     "test": "node --test tests/*.test.js",
     "db:seed": "node supabase/seed.js"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.0.0"
   },
   "dependencies": {
     "@google/genai": "^3.6.1",
