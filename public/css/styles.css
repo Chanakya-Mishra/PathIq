@@ -718,6 +718,397 @@ select:focus-visible {
   min-height: 44px;
 }
 
+/* Desktop Sidebar Shell + Mobile Responsive Nav */
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-sidebar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 25;
+}
+
+.sidebar-brand,
+.sidebar-footer-card {
+  display: none;
+}
+
+.app-main-wrap {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.site-header {
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 10px 16px;
+}
+
+.status-inner,
+.main-content {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.main-nav {
+  border-bottom: none;
+  position: static;
+}
+
+@media (min-width: 960px) {
+  .app-shell {
+    flex-direction: row;
+  }
+
+  .app-sidebar {
+    width: 230px;
+    flex-shrink: 0;
+    border-bottom: none;
+    border-right: 1px solid var(--border);
+    padding: 16px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: 100vh;
+  }
+
+  .sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px;
+  }
+
+  .mobile-brand {
+    display: none;
+  }
+
+  .main-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1 1 auto;
+  }
+
+  .nav-tab {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .sidebar-footer-card {
+    display: block;
+    background: var(--accent-soft);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px;
+  }
+
+  .sidebar-free-note {
+    margin: 0;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--accent-strong);
+  }
+
+  .header-inner {
+    justify-content: flex-end;
+  }
+}
+
+/* Student Dashboard Grid (Doubttify + EduGate layout) */
+.dash-layout {
+  display: grid;
+  gap: 14px;
+}
+
+@media (min-width: 1080px) {
+  .dash-layout {
+    grid-template-columns: minmax(0, 1fr) 290px;
+    align-items: start;
+  }
+}
+
+.dash-main-col,
+.dash-rail-col {
+  display: grid;
+  gap: 14px;
+}
+
+.dash-hero-card {
+  background: var(--accent-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.dash-hero-title {
+  margin: 0 0 4px;
+  font-size: 1.2rem;
+}
+
+.dash-hero-sub {
+  margin: 0 0 12px;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.dash-sec-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.dash-sec-title {
+  margin: 0 0 8px;
+  font-size: 1rem;
+  color: var(--accent-strong);
+}
+
+.dash-courses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.dash-course-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 5px solid var(--track-color, var(--accent));
+  border-radius: var(--radius);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.dash-course-title {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+
+.dash-course-meta {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.dash-open-btn {
+  align-self: flex-start;
+  padding: 6px 12px;
+}
+
+.dash-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.dash-donut-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+}
+
+.dash-donut-ring {
+  width: 116px;
+  height: 116px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dash-donut-hole {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.dash-donut-pct {
+  font-size: 1.15rem;
+  line-height: 1.1;
+}
+
+.dash-donut-lbl {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.dash-legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+  font-size: 0.82rem;
+}
+
+.dash-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dash-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dash-bars-list {
+  display: grid;
+  gap: 10px;
+}
+
+.dash-bar-labels {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.84rem;
+  margin-bottom: 4px;
+}
+
+.dash-bar-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dash-bar-track {
+  height: 8px;
+  background: var(--surface-alt);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.dash-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+}
+
+/* Study Schedule Calendar & Right Rail */
+.dash-cal-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.cal-nav-btn {
+  min-width: 36px;
+  min-height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.cal-month-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.dash-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  text-align: center;
+}
+
+.cal-weekday {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding: 3px 0;
+}
+
+.cal-day {
+  min-height: 32px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.cal-day.is-muted {
+  color: #96a49e;
+  cursor: default;
+}
+
+.cal-day.is-today {
+  border-color: var(--accent);
+  font-weight: 700;
+}
+
+.cal-day.is-marked {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+}
+
+.dash-cal-hint {
+  margin: 8px 0 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.dash-portal-link {
+  display: block;
+  padding: 8px 0;
+  border-top: 1px solid var(--border);
+  color: var(--accent-strong);
+  font-weight: 600;
+  font-size: 0.88rem;
+  text-decoration: none;
+}
+
+.dash-portal-link:first-of-type {
+  border-top: none;
+}
+
+.dash-full-btn {
+  width: 100%;
+}
+
+html[data-lite="true"] .dash-donut-ring,
+html[data-lite="true"] .sidebar-footer-card {
+  display: none !important;
+}
+
+html[data-lite="true"] .dash-hero-card,
+html[data-lite="true"] .dash-course-card {
+  background: #ffffff;
+  border-radius: 2px;
+}
+
 /* Toast */
 .toast {
   position: fixed;

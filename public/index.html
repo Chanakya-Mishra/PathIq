@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Free, lightweight, low-data multilingual career guidance and curated zero-cost learning resources.">
+  <meta name="description" content="Free, lightweight, low-data multilingual career guidance, student dashboard, AI doubt solver, and verified free learning resources.">
   <meta name="theme-color" content="#0f5c52">
   <title>PathIQ — Free Career Guide</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f5c52'/%3E%3Cpath d='M9 22V10h7a5 5 0 0 1 0 10h-4v2H9zm3-5h4a2 2 0 0 0 0-4h-4v4z' fill='%23fff'/%3E%3C/svg%3E">
@@ -12,9 +12,9 @@
 <body>
   <a class="skip-link" href="#main-content" data-i18n="skipToMain">Skip to main content</a>
 
-  <header class="site-header">
-    <div class="container header-inner">
-      <div class="brand">
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="sidebar-brand">
         <span class="brand-mark" aria-hidden="true">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/>
@@ -27,87 +27,112 @@
         </div>
       </div>
 
-      <div class="header-controls">
-        <div class="lang-switcher" role="group" aria-label="Language">
-          <button type="button" class="lang-btn" data-lang="en" aria-pressed="true">EN</button>
-          <button type="button" class="lang-btn" data-lang="hi" aria-pressed="false">हिन्दी</button>
-          <button type="button" class="lang-btn" data-lang="ta" aria-pressed="false">தமிழ்</button>
-          <button type="button" class="lang-btn" data-lang="bn" aria-pressed="false">বাংলা</button>
+      <nav class="main-nav" aria-label="Primary sections">
+        <button type="button" class="nav-tab" data-tab="dashboard" aria-current="page">
+          <span data-i18n="navDashboard">Dashboard</span>
+        </button>
+        <button type="button" class="nav-tab" data-tab="guidance">
+          <span data-i18n="navGuidance">Career Guide</span>
+        </button>
+        <button type="button" class="nav-tab" data-tab="directory">
+          <span data-i18n="navResources">Free Resources</span>
+        </button>
+        <button type="button" class="nav-tab" data-tab="saved">
+          <span data-i18n="navSaved">My Saved Plan</span>
+          <span id="saved-count-badge" class="count-badge">0</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer-card">
+        <p class="sidebar-free-note" data-i18n="sidebarFreeNote">100% Free · Zero Login Wall</p>
+      </div>
+    </aside>
+
+    <div class="app-main-wrap">
+      <header class="site-header">
+        <div class="header-inner">
+          <div class="mobile-brand">
+            <span class="brand-title">PathIQ</span>
+            <span class="brand-sub" data-i18n="tagline">Free, low-data career guide</span>
+          </div>
+
+          <div class="header-controls">
+            <div class="lang-switcher" role="group" aria-label="Language">
+              <button type="button" class="lang-btn" data-lang="en" aria-pressed="true">EN</button>
+              <button type="button" class="lang-btn" data-lang="hi" aria-pressed="false">हिन्दी</button>
+              <button type="button" class="lang-btn" data-lang="ta" aria-pressed="false">தமிழ்</button>
+              <button type="button" class="lang-btn" data-lang="bn" aria-pressed="false">বাংলা</button>
+            </div>
+
+            <button
+              type="button"
+              id="lite-toggle"
+              class="lite-toggle"
+              role="switch"
+              aria-checked="false"
+            >
+              <span class="lite-dot" aria-hidden="true"></span>
+              <span data-i18n="liteModeLabel">Lite Mode</span>
+            </button>
+          </div>
         </div>
 
-        <button
-          type="button"
-          id="lite-toggle"
-          class="lite-toggle"
-          role="switch"
-          aria-checked="false"
-        >
-          <span class="lite-dot" aria-hidden="true"></span>
-          <span data-i18n="liteModeLabel">Lite Mode</span>
-        </button>
-      </div>
+        <div class="status-strip">
+          <div class="status-inner">
+            <span id="data-indicator" class="data-indicator">Low-data ready</span>
+            <span id="no-login-badge" class="no-login-badge" data-i18n="noLoginNote">No login required · Saved on device</span>
+          </div>
+        </div>
+      </header>
+
+      <main id="main-content" class="main-content" tabindex="-1">
+        <section id="view-dashboard" class="view-panel" aria-labelledby="dashboard-heading">
+          <h1 id="dashboard-heading" class="page-heading" data-i18n="dashHeading">
+            Student Learning Dashboard
+          </h1>
+          <div id="dashboard-workspace">
+            <p class="muted" data-i18n="loadingText">Loading...</p>
+          </div>
+        </section>
+
+        <section id="view-guidance" class="view-panel" aria-labelledby="guidance-heading" hidden>
+          <h2 id="guidance-heading" class="page-heading" data-i18n="guidanceHeading">
+            Structured Career Guidance Without Paid Coaching
+          </h2>
+          <p class="page-lead" data-i18n="guidanceLead">
+            Ask a career question or tap a starter topic below for a step-by-step free roadmap.
+          </p>
+          <div id="guidance-workspace" class="panel-card">
+            <p class="muted" data-i18n="loadingText">Loading...</p>
+          </div>
+        </section>
+
+        <section id="view-directory" class="view-panel" aria-labelledby="directory-heading" hidden>
+          <h2 id="directory-heading" class="page-heading" data-i18n="directoryHeading">
+            Verified 100% Free Learning Resources
+          </h2>
+          <p class="page-lead" data-i18n="directoryLead">
+            Filter open courses, official docs, practice platforms, and exam portals by data usage and language.
+          </p>
+          <div id="directory-workspace" class="panel-card">
+            <p class="muted" data-i18n="loadingText">Loading...</p>
+          </div>
+        </section>
+
+        <section id="view-saved" class="view-panel" aria-labelledby="saved-heading" hidden>
+          <h2 id="saved-heading" class="page-heading" data-i18n="savedHeading">
+            My Saved Learning Plan
+          </h2>
+          <p class="page-lead" data-i18n="savedLead">
+            Stored locally on this device. Copy as plain text or Markdown to share on WhatsApp.
+          </p>
+          <div id="saved-workspace" class="panel-card">
+            <p class="muted" data-i18n="loadingText">Loading...</p>
+          </div>
+        </section>
+      </main>
     </div>
-
-    <div class="status-strip">
-      <div class="container status-inner">
-        <span id="data-indicator" class="data-indicator">Low-data ready</span>
-        <span id="no-login-badge" class="no-login-badge" data-i18n="noLoginNote">No login required · Saved on device</span>
-      </div>
-    </div>
-  </header>
-
-  <nav class="main-nav" aria-label="Primary sections">
-    <div class="container nav-inner">
-      <button type="button" class="nav-tab" data-tab="guidance" aria-current="page">
-        <span data-i18n="navGuidance">Career Guide</span>
-      </button>
-      <button type="button" class="nav-tab" data-tab="directory">
-        <span data-i18n="navResources">Free Resources</span>
-      </button>
-      <button type="button" class="nav-tab" data-tab="saved">
-        <span data-i18n="navSaved">My Saved Plan</span>
-        <span id="saved-count-badge" class="count-badge">0</span>
-      </button>
-    </div>
-  </nav>
-
-  <main id="main-content" class="container main-content" tabindex="-1">
-    <section id="view-guidance" class="view-panel" aria-labelledby="guidance-heading">
-      <h1 id="guidance-heading" class="page-heading" data-i18n="guidanceHeading">
-        Structured Career Guidance Without Paid Coaching
-      </h1>
-      <p class="page-lead" data-i18n="guidanceLead">
-        Ask a career question or tap a starter topic below for a step-by-step free roadmap.
-      </p>
-      <div id="guidance-workspace" class="panel-card">
-        <p class="muted" data-i18n="loadingText">Loading guidance workspace...</p>
-      </div>
-    </section>
-
-    <section id="view-directory" class="view-panel" aria-labelledby="directory-heading" hidden>
-      <h2 id="directory-heading" class="page-heading" data-i18n="directoryHeading">
-        Verified 100% Free Learning Resources
-      </h2>
-      <p class="page-lead" data-i18n="directoryLead">
-        Filter open courses, official docs, practice platforms, and exam portals by data usage and language.
-      </p>
-      <div id="directory-workspace" class="panel-card">
-        <p class="muted" data-i18n="loadingText">Loading resource directory...</p>
-      </div>
-    </section>
-
-    <section id="view-saved" class="view-panel" aria-labelledby="saved-heading" hidden>
-      <h2 id="saved-heading" class="page-heading" data-i18n="savedHeading">
-        My Saved Learning Plan
-      </h2>
-      <p class="page-lead" data-i18n="savedLead">
-        Stored locally on this device. Copy as plain text or Markdown to share on WhatsApp.
-      </p>
-      <div id="saved-workspace" class="panel-card">
-        <p class="muted" data-i18n="loadingText">Loading saved plan...</p>
-      </div>
-    </section>
-  </main>
+  </div>
 
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 

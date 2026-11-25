@@ -587,6 +587,22 @@ export function createGuidanceView({ container, store, showToast }) {
       const initialQ = state.lastQuery?.query || '';
       loadGuidance({ query: initialQ, pathId: initialPath });
     },
+    openPath(pathId) {
+      activeMode = 'roadmap';
+      currentQuery = '';
+      store.update({ activeTab: 'guidance' });
+      loadGuidance({ query: '', pathId });
+    },
+    openDoubt(question) {
+      activeMode = 'doubt';
+      doubtQuery = question || '';
+      store.update({ activeTab: 'guidance' });
+      if (doubtQuery.trim()) {
+        runDoubtSolve({ question: doubtQuery });
+      } else {
+        render();
+      }
+    },
     onStateChange(prevLang) {
       const state = store.getState();
       if (state.lang !== prevLang && activeMode === 'roadmap') {

@@ -7,6 +7,7 @@ const SHELL_ASSETS = [
   '/js/store.js',
   '/js/i18n.js',
   '/js/liteMode.js',
+  '/js/dashboardView.js',
   '/js/guidanceCore.js',
   '/js/qaService.js',
   '/js/qaView.js',

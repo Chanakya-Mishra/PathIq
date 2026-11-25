@@ -6,9 +6,10 @@ export const DEFAULT_STATE = Object.freeze({
   liteMode: false,
   stage: 'college',
   weeklyHours: '10',
-  activeTab: 'guidance',
+  activeTab: 'dashboard',
   savedResourceIds: [],
   completedSteps: {},
+  studyDays: {},
   qaCache: {},
   lastQuery: null
 });
@@ -72,6 +73,16 @@ export function createStore(storage = getDefaultStorage()) {
       return this.update({ completedSteps: nextSteps });
     },
 
+    toggleStudyDay(isoDate) {
+      const nextDays = { ...state.studyDays };
+      if (nextDays[isoDate]) {
+        delete nextDays[isoDate];
+      } else {
+        nextDays[isoDate] = true;
+      }
+      return this.update({ studyDays: nextDays });
+    },
+
     setCachedAnswer(cacheKey, answer) {
       const entries = Object.entries(state.qaCache).filter(([k]) => k !== cacheKey);
       entries.push([cacheKey, { answer, cachedAt: Date.now() }]);
@@ -117,6 +128,8 @@ function loadInitialState(storage) {
         parsed.completedSteps && typeof parsed.completedSteps === 'object'
           ? parsed.completedSteps
           : {},
+      studyDays:
+        parsed.studyDays && typeof parsed.studyDays === 'object' ? parsed.studyDays : {},
       qaCache: parsed.qaCache && typeof parsed.qaCache === 'object' ? parsed.qaCache : {}
     };
   } catch {
@@ -129,6 +142,7 @@ function cloneDefault() {
     ...DEFAULT_STATE,
     savedResourceIds: [],
     completedSteps: {},
+    studyDays: {},
     qaCache: {}
   };
 }

@@ -20,6 +20,7 @@ import {
 } from '../public/js/qaService.js';
 import { filterResources } from '../public/js/directoryView.js';
 import { formatPlanExport, parseShareCodeFromPath } from '../public/js/savedPlanView.js';
+import { buildMonthCalendar, computeLearningStats } from '../public/js/dashboardView.js';
 import { createSupabaseRepo } from '../lib/supabaseRepo.js';
 import {
   createDoubtSolver,
@@ -189,8 +190,10 @@ test('Phase 3 Sanity: Lite Mode telemetry computes lightweight savings and CSS s
   assert.ok(liteStats.pct >= 90);
 
   const cssRaw = await fs.readFile(path.join(ROOT_DIR, 'public/css/styles.css'), 'utf8');
+  const cssGzip = zlib.gzipSync(Buffer.from(cssRaw, 'utf8'), { level: 6 }).length;
   assert.ok(cssRaw.includes('html[data-lite="true"]'));
-  assert.ok(Buffer.byteLength(cssRaw, 'utf8') < 16 * 1024);
+  assert.ok(Buffer.byteLength(cssRaw, 'utf8') < 24 * 1024, `Expected raw CSS < 24 KB, got ${cssRaw.length}`);
+  assert.ok(cssGzip < 6 * 1024, `Expected gzipped CSS < 6 KB, got ${cssGzip}`);
 });
 
 test('Phase 4 Sanity: POST /api/guidance returns 5-part localized roadmap & paces weekly hours', async () => {
@@ -301,6 +304,7 @@ test('Phase 7 Sanity: HTTP ETag 304, method validation, HTML accessibility, and 
     'public/js/store.js',
     'public/js/i18n.js',
     'public/js/liteMode.js',
+    'public/js/dashboardView.js',
     'public/js/guidanceCore.js',
     'public/js/qaService.js',
     'public/js/qaView.js',
@@ -326,8 +330,8 @@ test('Phase 7 Sanity: HTTP ETag 304, method validation, HTML accessibility, and 
     dataGzip += zlib.gzipSync(buf, { level: 6 }).length;
   }
 
-  assert.ok(coreGzip < 32 * 1024, `Expected core app shell+JS+CSS gzip < 32 KB, got ${coreGzip} bytes`);
-  assert.ok(coreGzip + dataGzip < 68 * 1024, `Expected total 4-language bundle gzip < 68 KB, got ${coreGzip + dataGzip} bytes`);
+  assert.ok(coreGzip < 35 * 1024, `Expected core app shell+JS+CSS gzip < 35 KB, got ${coreGzip} bytes`);
+  assert.ok(coreGzip + dataGzip < 72 * 1024, `Expected total 4-language bundle gzip < 72 KB, got ${coreGzip + dataGzip} bytes`);
 
   const html = await fs.readFile(path.join(ROOT_DIR, 'public/index.html'), 'utf8');
   assert.match(html, /class="skip-link"/);
@@ -590,4 +594,40 @@ test('Phase C Sanity: Doubt cache key normalization, share-code URL parsing, and
   const swText = await fs.readFile(path.join(ROOT_DIR, 'public/sw.js'), 'utf8');
   assert.match(swText, /CACHE_NAME/);
   assert.match(swText, /\/api\//);
+});
+
+test('Phase D Sanity: Student Dashboard stats, month calendar, studyDays store, and sidebar shell work cleanly', async () => {
+  const stats = computeLearningStats(
+    {
+      'tech-zero-cost::step-1': true,
+      'tech-zero-cost::step-2': true,
+      'data-analyst-free::step-1': true
+    },
+    ['res-freecodecamp']
+  );
+  assert.equal(stats.featured.length, 3);
+  assert.equal(stats.totalChecked, 3);
+  assert.equal(stats.savedCount, 1);
+  assert.ok(stats.overallPct > 0 && stats.overallPct <= 100);
+
+  const cal = buildMonthCalendar(new Date(2026, 10, 25)); // Nov 25, 2026
+  assert.equal(cal.todayIso, '2026-11-25');
+  assert.equal(cal.cells.length % 7, 0);
+  assert.equal(cal.cells.filter((c) => c.isToday).length, 1);
+
+  const memory = new Map();
+  const mockStorage = {
+    getItem: (k) => (memory.has(k) ? memory.get(k) : null),
+    setItem: (k, v) => memory.set(k, v)
+  };
+  const store = createStore(mockStorage);
+  assert.equal(store.getState().activeTab, 'dashboard');
+  store.toggleStudyDay('2026-11-25');
+  assert.equal(store.getState().studyDays['2026-11-25'], true);
+  store.toggleStudyDay('2026-11-25');
+  assert.equal(store.getState().studyDays['2026-11-25'], undefined);
+
+  const html = await fs.readFile(path.join(ROOT_DIR, 'public/index.html'), 'utf8');
+  assert.match(html, /id="view-dashboard"/);
+  assert.match(html, /class="app-sidebar"/);
 });

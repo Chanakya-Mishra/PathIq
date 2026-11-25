@@ -1,6 +1,7 @@
 import { createStore } from './store.js';
 import { applyStaticTranslations, t } from './i18n.js';
 import { syncLiteModeUI } from './liteMode.js';
+import { createDashboardView } from './dashboardView.js';
 import { createGuidanceView } from './qaView.js';
 import { createDirectoryView } from './directoryView.js';
 import {
@@ -13,6 +14,7 @@ const store = createStore();
 
 const tabButtons = Array.from(document.querySelectorAll('.nav-tab'));
 const viewPanels = {
+  dashboard: document.getElementById('view-dashboard'),
   guidance: document.getElementById('view-guidance'),
   directory: document.getElementById('view-directory'),
   saved: document.getElementById('view-saved')
@@ -22,6 +24,7 @@ const liteToggle = document.getElementById('lite-toggle');
 const indicatorEl = document.getElementById('data-indicator');
 const savedBadge = document.getElementById('saved-count-badge');
 const toastEl = document.getElementById('toast');
+const dashboardWorkspace = document.getElementById('dashboard-workspace');
 const guidanceWorkspace = document.getElementById('guidance-workspace');
 const directoryWorkspace = document.getElementById('directory-workspace');
 const savedWorkspace = document.getElementById('saved-workspace');
@@ -41,6 +44,15 @@ export function showToast(message) {
 
 const guidanceView = guidanceWorkspace
   ? createGuidanceView({ container: guidanceWorkspace, store, showToast })
+  : null;
+const dashboardView = dashboardWorkspace
+  ? createDashboardView({
+      container: dashboardWorkspace,
+      store,
+      showToast,
+      onOpenPath: (pathId) => guidanceView?.openPath(pathId),
+      onQuickDoubt: (question) => guidanceView?.openDoubt(question)
+    })
   : null;
 const directoryView = directoryWorkspace
   ? createDirectoryView({ container: directoryWorkspace, store, showToast })
@@ -75,15 +87,10 @@ function syncShell(state) {
   applyStaticTranslations(document, state.lang);
   syncLiteModeUI(state, { indicatorEl, toggleEl: liteToggle });
 
-  if (guidanceView) {
-    guidanceView.onStateChange(previousLang);
-  }
-  if (directoryView) {
-    directoryView.render();
-  }
-  if (savedPlanView) {
-    savedPlanView.render();
-  }
+  if (dashboardView) dashboardView.render();
+  if (guidanceView) guidanceView.onStateChange(previousLang);
+  if (directoryView) directoryView.render();
+  if (savedPlanView) savedPlanView.render();
   previousLang = state.lang;
 }
 
@@ -112,6 +119,7 @@ if (liteToggle) {
 
 store.subscribe(syncShell);
 syncShell(store.getState());
+if (dashboardView) dashboardView.init();
 if (guidanceView) guidanceView.init();
 if (directoryView) directoryView.init();
 if (savedPlanView) savedPlanView.init();
