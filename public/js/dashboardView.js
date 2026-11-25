@@ -9,7 +9,7 @@ function el(tag, className, text) {
   return node;
 }
 
-const TRACK_COLORS = ['#0f5c52', '#2c6aa0', '#b4690e'];
+const TRACK_COLORS = ['#155eb2', '#0ea59a', '#d97706'];
 
 /**
  * Compute student learning stats for dashboard cards, donut chart, and progress bars.
@@ -125,11 +125,14 @@ export function createDashboardView({ container, store, onOpenPath, onQuickDoubt
 
     // 1. Welcome & Weekly Goal Banner + Quick Doubt Launchpad
     const heroCard = el('section', 'dash-hero-card');
+    const heroTop = el('div', 'dash-hero-top');
     const heroText = el('div', 'dash-hero-body');
     heroText.append(
       el('h2', 'dash-hero-title', t(lang, 'dashWelcomeTitle')),
       el('p', 'dash-hero-sub', t(lang, 'dashWelcomeSub', { pct: stats.overallPct }))
     );
+    const goalBadge = el('span', 'dash-goal-badge', `${stats.overallPct}% ${t(lang, 'dashOverallDone')}`);
+    heroTop.append(heroText, goalBadge);
 
     const quickForm = el('form', 'qa-input-row dash-quick-form');
     const quickInput = document.createElement('input');
@@ -137,7 +140,7 @@ export function createDashboardView({ container, store, onOpenPath, onQuickDoubt
     quickInput.className = 'text-input';
     quickInput.placeholder = t(lang, 'dashQuickDoubtPlaceholder');
     quickInput.setAttribute('aria-label', t(lang, 'dashQuickDoubtPlaceholder'));
-    const quickBtn = el('button', 'btn btn-primary', t(lang, 'dashQuickDoubtBtn'));
+    const quickBtn = el('button', 'btn btn-hero', t(lang, 'dashQuickDoubtBtn'));
     quickBtn.type = 'submit';
     quickForm.append(quickInput, quickBtn);
     quickForm.addEventListener('submit', (e) => {
@@ -146,8 +149,7 @@ export function createDashboardView({ container, store, onOpenPath, onQuickDoubt
       if (onQuickDoubt) onQuickDoubt(q);
     });
 
-    heroText.appendChild(quickForm);
-    heroCard.appendChild(heroText);
+    heroCard.append(heroTop, quickForm);
     mainCol.appendChild(heroCard);
 
     // 2. Your Active Learning Paths (3 scannable cards)
@@ -165,22 +167,27 @@ export function createDashboardView({ container, store, onOpenPath, onQuickDoubt
       const card = el('article', 'dash-course-card');
       card.style.setProperty('--track-color', item.color);
 
+      const pill = el('span', 'dash-track-pill', t(lang, `domain_${item.domain}`));
       const title = el('h4', 'dash-course-title', localizeField(item.path.title, lang));
       const meta = el(
         'p',
         'dash-course-meta',
-        `${t(lang, `domain_${item.domain}`)} · ${t(lang, 'dashStepsRatio', {
-          done: item.doneSteps,
-          total: item.totalSteps
-        })}`
+        t(lang, 'dashStepsRatio', { done: item.doneSteps, total: item.totalSteps })
       );
+
+      const miniTrack = el('div', 'dash-bar-track');
+      const miniFill = el('div', 'dash-bar-fill');
+      miniFill.style.width = `${item.pct}%`;
+      miniFill.style.background = item.color;
+      miniTrack.appendChild(miniFill);
+
       const openBtn = el('button', 'btn btn-outline dash-open-btn', `${t(lang, 'dashOpenPath')} →`);
       openBtn.type = 'button';
       openBtn.addEventListener('click', () => {
         if (onOpenPath) onOpenPath(item.id);
       });
 
-      card.append(title, meta, openBtn);
+      card.append(pill, title, meta, miniTrack, openBtn);
       coursesRow.appendChild(card);
     }
     pathsSec.appendChild(coursesRow);

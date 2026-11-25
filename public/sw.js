@@ -2,6 +2,8 @@ const CACHE_NAME = 'pathiq-shell-v1';
 const SHELL_ASSETS = [
   '/',
   '/index.html',
+  '/favicon.png',
+  '/logo.png',
   '/css/styles.css',
   '/js/main.js',
   '/js/store.js',

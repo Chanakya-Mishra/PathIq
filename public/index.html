@@ -4,9 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Free, lightweight, low-data multilingual career guidance, student dashboard, AI doubt solver, and verified free learning resources.">
-  <meta name="theme-color" content="#0f5c52">
+  <meta name="theme-color" content="#155eb2">
   <title>PathIQ — Free Career Guide</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f5c52'/%3E%3Cpath d='M9 22V10h7a5 5 0 0 1 0 10h-4v2H9zm3-5h4a2 2 0 0 0 0-4h-4v4z' fill='%23fff'/%3E%3C/svg%3E">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/favicon.png">
   <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
@@ -15,30 +16,49 @@
   <div class="app-shell">
     <aside class="app-sidebar">
       <div class="sidebar-brand">
-        <span class="brand-mark" aria-hidden="true">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/>
-            <path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/>
-          </svg>
+        <img src="/logo.png" alt="PathIQ" class="brand-logo" width="112" height="96" decoding="async">
+        <span class="brand-wordmark-lite" aria-hidden="true">
+          <span class="word-path">path</span><span class="word-iq">iq</span>
         </span>
-        <div>
-          <span class="brand-title">PathIQ</span>
-          <span class="brand-sub" data-i18n="tagline">Free, low-data career guide</span>
-        </div>
+        <span class="brand-sub" data-i18n="tagline">Free, low-data career guide</span>
       </div>
 
       <nav class="main-nav" aria-label="Primary sections">
         <button type="button" class="nav-tab" data-tab="dashboard" aria-current="page">
-          <span data-i18n="navDashboard">Dashboard</span>
+          <span class="nav-tab-inner">
+            <svg class="decor-icon nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+            </svg>
+            <span data-i18n="navDashboard">Dashboard</span>
+          </span>
         </button>
         <button type="button" class="nav-tab" data-tab="guidance">
-          <span data-i18n="navGuidance">Career Guide</span>
+          <span class="nav-tab-inner">
+            <svg class="decor-icon nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M12 20h9"/>
+              <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+            </svg>
+            <span data-i18n="navGuidance">Career Guide</span>
+          </span>
         </button>
         <button type="button" class="nav-tab" data-tab="directory">
-          <span data-i18n="navResources">Free Resources</span>
+          <span class="nav-tab-inner">
+            <svg class="decor-icon nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+            </svg>
+            <span data-i18n="navResources">Free Resources</span>
+          </span>
         </button>
         <button type="button" class="nav-tab" data-tab="saved">
-          <span data-i18n="navSaved">My Saved Plan</span>
+          <span class="nav-tab-inner">
+            <svg class="decor-icon nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+            </svg>
+            <span data-i18n="navSaved">My Saved Plan</span>
+          </span>
           <span id="saved-count-badge" class="count-badge">0</span>
         </button>
       </nav>
@@ -52,8 +72,11 @@
       <header class="site-header">
         <div class="header-inner">
           <div class="mobile-brand">
-            <span class="brand-title">PathIQ</span>
-            <span class="brand-sub" data-i18n="tagline">Free, low-data career guide</span>
+            <img src="/favicon.png" alt="" class="mobile-logo-icon" width="28" height="28" decoding="async">
+            <div>
+              <span class="brand-title"><span class="word-path">path</span><span class="word-iq">iq</span></span>
+              <span class="brand-sub" data-i18n="tagline">Free, low-data career guide</span>
+            </div>
           </div>
 
           <div class="header-controls">
@@ -71,7 +94,9 @@
               role="switch"
               aria-checked="false"
             >
-              <span class="lite-dot" aria-hidden="true"></span>
+              <span class="lite-switch-track" aria-hidden="true">
+                <span class="lite-switch-thumb"></span>
+              </span>
               <span data-i18n="liteModeLabel">Lite Mode</span>
             </button>
           </div>
@@ -87,9 +112,11 @@
 
       <main id="main-content" class="main-content" tabindex="-1">
         <section id="view-dashboard" class="view-panel" aria-labelledby="dashboard-heading">
-          <h1 id="dashboard-heading" class="page-heading" data-i18n="dashHeading">
-            Student Learning Dashboard
-          </h1>
+          <div class="view-head-row">
+            <h1 id="dashboard-heading" class="page-heading" data-i18n="dashHeading">
+              Student Learning Dashboard
+            </h1>
+          </div>
           <div id="dashboard-workspace">
             <p class="muted" data-i18n="loadingText">Loading...</p>
           </div>

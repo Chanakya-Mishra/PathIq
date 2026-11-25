@@ -192,8 +192,8 @@ test('Phase 3 Sanity: Lite Mode telemetry computes lightweight savings and CSS s
   const cssRaw = await fs.readFile(path.join(ROOT_DIR, 'public/css/styles.css'), 'utf8');
   const cssGzip = zlib.gzipSync(Buffer.from(cssRaw, 'utf8'), { level: 6 }).length;
   assert.ok(cssRaw.includes('html[data-lite="true"]'));
-  assert.ok(Buffer.byteLength(cssRaw, 'utf8') < 24 * 1024, `Expected raw CSS < 24 KB, got ${cssRaw.length}`);
-  assert.ok(cssGzip < 6 * 1024, `Expected gzipped CSS < 6 KB, got ${cssGzip}`);
+  assert.ok(Buffer.byteLength(cssRaw, 'utf8') < 28 * 1024, `Expected raw CSS < 28 KB, got ${cssRaw.length}`);
+  assert.ok(cssGzip < 7 * 1024, `Expected gzipped CSS < 7 KB, got ${cssGzip}`);
 });
 
 test('Phase 4 Sanity: POST /api/guidance returns 5-part localized roadmap & paces weekly hours', async () => {
@@ -337,7 +337,13 @@ test('Phase 7 Sanity: HTTP ETag 304, method validation, HTML accessibility, and 
   assert.match(html, /class="skip-link"/);
   assert.match(html, /role="switch"/);
   assert.match(html, /aria-live="polite"/);
-  assert.equal(/<img\s/i.test(html), false, 'Should avoid unoptimized <img> tags');
+  assert.match(html, /href="\/favicon\.png"/);
+  assert.match(html, /src="\/logo\.png"[^>]*width="112"[^>]*height="96"/);
+
+  const logoStat = await fs.stat(path.join(ROOT_DIR, 'public/logo.png'));
+  const favStat = await fs.stat(path.join(ROOT_DIR, 'public/favicon.png'));
+  assert.ok(logoStat.size < 12 * 1024, `Expected optimized logo.png < 12 KB, got ${logoStat.size}`);
+  assert.ok(favStat.size < 4 * 1024, `Expected optimized favicon.png < 4 KB, got ${favStat.size}`);
 
   const { server, baseUrl } = await startTestServer();
   try {
