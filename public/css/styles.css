@@ -907,11 +907,12 @@ select:focus-visible {
 .dash-layout {
   display: grid;
   gap: 16px;
+  min-width: 0;
 }
 
-@media (min-width: 1080px) {
+@media (min-width: 1140px) {
   .dash-layout {
-    grid-template-columns: minmax(0, 1fr) 296px;
+    grid-template-columns: minmax(0, 1fr) 280px;
     align-items: start;
   }
 }
@@ -920,6 +921,14 @@ select:focus-visible {
 .dash-rail-col {
   display: grid;
   gap: 16px;
+  min-width: 0;
+}
+
+@media (min-width: 640px) and (max-width: 1139px) {
+  .dash-rail-col {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    align-items: start;
+  }
 }
 
 .dash-hero-card {
@@ -928,6 +937,7 @@ select:focus-visible {
   border-radius: var(--radius-lg);
   padding: 20px;
   box-shadow: var(--shadow-md);
+  min-width: 0;
 }
 
 .dash-hero-top {
@@ -982,8 +992,9 @@ select:focus-visible {
 
 .dash-courses-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
   gap: 12px;
+  min-width: 0;
 }
 
 .dash-course-card {
@@ -997,6 +1008,7 @@ select:focus-visible {
   justify-content: space-between;
   gap: 10px;
   box-shadow: var(--shadow-sm);
+  min-width: 0;
 }
 
 .dash-course-card:hover {
@@ -1019,6 +1031,8 @@ select:focus-visible {
   font-size: 0.96rem;
   font-weight: 700;
   line-height: 1.35;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .dash-course-meta {
@@ -1035,8 +1049,18 @@ select:focus-visible {
 
 .dash-stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr));
   gap: 12px;
+  min-width: 0;
+}
+
+.dash-stat-card,
+.dash-prog-card,
+.dash-cal-card,
+.dash-portal-card,
+.dash-share-card {
+  min-width: 0;
+  overflow: hidden;
 }
 
 .dash-donut-wrap {
@@ -1044,6 +1068,7 @@ select:focus-visible {
   flex-wrap: wrap;
   align-items: center;
   gap: 16px;
+  min-width: 0;
 }
 
 .dash-donut-ring {
@@ -1086,12 +1111,15 @@ select:focus-visible {
   display: grid;
   gap: 7px;
   font-size: 0.82rem;
+  min-width: 0;
+  flex: 1 1 140px;
 }
 
 .dash-legend-item {
   display: flex;
   align-items: center;
   gap: 7px;
+  min-width: 0;
 }
 
 .dash-legend-dot {
@@ -1101,23 +1129,48 @@ select:focus-visible {
   flex-shrink: 0;
 }
 
+.dash-legend-text {
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .dash-bars-list {
   display: grid;
   gap: 12px;
+  min-width: 0;
+}
+
+.dash-bar-row {
+  min-width: 0;
 }
 
 .dash-bar-labels {
   display: flex;
   justify-content: space-between;
-  gap: 8px;
+  align-items: center;
+  gap: 10px;
   font-size: 0.84rem;
   margin-bottom: 5px;
+  min-width: 0;
+  width: 100%;
 }
 
 .dash-bar-name {
+  flex: 1 1 auto;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.dash-bar-pct {
+  flex-shrink: 0;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  margin-left: 4px;
 }
 
 .dash-bar-track {
@@ -1125,6 +1178,8 @@ select:focus-visible {
   background: var(--surface-alt);
   border-radius: 99px;
   overflow: hidden;
+  min-width: 0;
+  width: 100%;
 }
 
 .dash-bar-fill {
@@ -1211,6 +1266,10 @@ select:focus-visible {
   font-weight: 600;
   font-size: 0.88rem;
   text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 .dash-portal-link:first-of-type {
@@ -1306,5 +1365,11 @@ html[data-lite="true"] .page-heading {
   }
   .dash-hero-card {
     padding: 14px;
+  }
+  .dash-donut-wrap {
+    justify-content: center;
+  }
+  .dash-legend {
+    width: 100%;
   }
 }

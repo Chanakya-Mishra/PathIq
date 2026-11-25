@@ -227,7 +227,10 @@ export function createDashboardView({ container, store, onOpenPath, onQuickDoubt
       const li = el('li', 'dash-legend-item');
       const dot = el('span', 'dash-legend-dot');
       dot.style.background = item.color;
-      li.append(dot, el('span', '', `${t(lang, `domain_${item.domain}`)} (${item.pct}%)`));
+      const labelText = `${t(lang, `domain_${item.domain}`)} (${item.pct}%)`;
+      const labelSpan = el('span', 'dash-legend-text', labelText);
+      labelSpan.title = labelText;
+      li.append(dot, labelSpan);
       legend.appendChild(li);
     }
 
@@ -242,8 +245,11 @@ export function createDashboardView({ container, store, onOpenPath, onQuickDoubt
     for (const item of stats.featured) {
       const row = el('div', 'dash-bar-row');
       const labelRow = el('div', 'dash-bar-labels');
+      const pathTitle = localizeField(item.path.title, lang);
+      const nameSpan = el('span', 'dash-bar-name', pathTitle);
+      nameSpan.title = pathTitle;
       labelRow.append(
-        el('span', 'dash-bar-name', localizeField(item.path.title, lang)),
+        nameSpan,
         el('strong', 'dash-bar-pct', `${item.pct}%`)
       );
       const track = el('div', 'dash-bar-track');
@@ -317,7 +323,9 @@ export function createDashboardView({ container, store, onOpenPath, onQuickDoubt
     for (const fid of featuredIds) {
       const r = RESOURCES.find((item) => item.id === fid);
       if (!r) continue;
-      const link = el('a', 'dash-portal-link', `${localizeField(r.title, lang)} →`);
+      const portalTitle = localizeField(r.title, lang);
+      const link = el('a', 'dash-portal-link', `${portalTitle} →`);
+      link.title = portalTitle;
       link.href = r.url;
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
