@@ -1,22 +1,64 @@
-# PathIQ — Lightweight Multilingual Career Guidance & Doubt Solver
+# PathIQ — Lightweight Multilingual Student Dashboard, Career Guide & Doubt Solver
 
-A fast, low-data, zero-login career guidance, AI doubt-solving, and 100% free learning resource web application built for learners without access to paid coaching.
+A fast, low-data, zero-login **Student Learning Dashboard**, **Multilingual Career Guide**, **AI Doubt Solver**, and **100% Free Learning Resource Directory** designed for learners without access to paid coaching and optimized for budget smartphones and slow connections.
+
+---
 
 ## Architecture & Low-Data Footprint
-- **Frontend:** Semantic HTML5, Lightweight Custom CSS, Vanilla ES Modules, and Service Worker shell caching (`public/sw.js`).
-- **Core App Shell + JS + CSS:** `~25.3 KB` gzipped (`25,885` bytes).
-- **Full 4-Language Offline Bundle (`en`, `hi`, `ta`, `bn`):** `~59.3 KB` gzipped (`60,760` bytes).
-- **Backend:** Lightweight Node.js server (`server.js`) with gzip compression, `ETag` caching, rate limiting, and server-side-only Supabase + Gemini integrations (`0 KB` SDK bloat sent to mobile browsers).
+- **Frontend:** Semantic HTML5, Lightweight Custom CSS (`~3.9 KB` gzipped), Modular Vanilla ES Modules, and Service Worker shell caching (`public/sw.js`).
+- **Core App Shell + JS + CSS:** `~30.6 KB` gzipped (`31,351` bytes).
+- **Full 4-Language Offline Bundle (`en`, `hi`, `ta`, `bn`):** `~66.3 KB` gzipped (`67,935` bytes).
+- **Backend:** Lightweight Node.js HTTP server (`server.js`) with gzip compression, `ETag` caching, per-IP rate limiting, and **server-side-only** Supabase + Gemini integrations (`0 KB` SDK overhead sent to the browser).
 
-## Key Features
-1. **Top-Level Multilingual Switcher:** Instant switching across **English (`en`)**, **Hindi (`hi`)**, **Tamil (`ta`)**, and **Bengali (`bn`)**, persisted in `localStorage`.
-2. **Lite Mode (Low Data):** Strips decorative visuals, compresses spacing into a text-first layout, and displays live payload and cache savings.
-3. **Structured Career Roadmaps:** Search input, starter question chips, **Current Stage** & **Weekly Time** context filters, interactive progress checkboxes, and verified free resources.
-4. **Small & Accurate Gemini Doubt Solver (`POST /api/doubt`):**
-   - Uses `@google/genai` **Interactions API**: defaults to **`gemini-3.5-flash-lite`** for fast low-cost doubts and escalates code/math/debugging doubts to **`gemini-4-hydrogen`** (`thinking_level: "low"`).
-   - Multi-turn follow-ups via `previous_interaction_id`, structured JSON output, per-IP rate limiting, and automatic offline fallback when unconfigured.
-5. **Curated 100% Free Resource Directory:** Multi-facet filtering by **Domain**, **Format**, **Language**, **Data Usage**, and search, plus community broken-link reporting (`POST /api/report`).
-6. **My Saved Plan & Cross-Device Share Codes:** Stored locally in `localStorage`, exportable to **WhatsApp Plain Text** or **Markdown** (`.txt` / `.md`), and shareable via 6-character codes (`/p/:code`) backed by **Supabase**.
+---
+
+## Core Features
+
+1. **Student Learning Dashboard (`Dashboard` View):**
+   - Responsive sidebar layout on desktop (collapsing cleanly into a sticky mobile nav strip).
+   - Welcome banner with live goal completion percentage and a quick Doubt Solver launchpad.
+   - **Active Learning Path Cards**, a pure-CSS **Progress Statistic Donut**, horizontal **Learning Progress** bars synced to `localStorage` milestones, and an interactive **Study Schedule Calendar** for marking local study days.
+2. **Top-Level Multilingual Switcher:**
+   - Instant header switching across **English (`en`)**, **Hindi (`hi`)**, **Tamil (`ta`)**, and **Bengali (`bn`)**, updating `<html lang>`, UI labels, starter questions, roadmaps, and resource notes (`localStorage`-persisted).
+3. **Lite Mode (Low Data Toggle):**
+   - Strips decorative visuals, donut chart ring, and non-essential subtitles, compresses spacing into a text-first layout, and displays live payload and cache savings.
+4. **Structured Career Roadmaps (`Career Guide`):**
+   - Search input, one-tap starter question chips, **Current Stage** (`School`, `College`, `Graduate`, `Career Switcher`) & **Weekly Time** (`5`, `10`, `20+` hrs) context filters.
+   - Renders a 5-part structured roadmap (**Overview**, **Core Skills**, **Interactive Step Checkboxes**, **Verified Free Resources**, **Practical Next Action**) with local answer caching.
+5. **Small & Accurate Gemini Doubt Solver (`POST /api/doubt`):**
+   - Built with `@google/genai` **Interactions API**: defaults to **`gemini-3.5-flash-lite`** for fast, low-cost doubts and escalates code/SQL/math/debugging doubts to **`gemini-4-hydrogen`** (`thinking_level: "low"`).
+   - Multi-turn follow-ups via `previous_interaction_id`, structured JSON output, cache-aside lookup in Supabase (`doubt_cache`), per-IP rate limiting (`429`), optional browser speech-to-text, and automatic offline fallback.
+6. **Curated 100% Free Resource Directory (`Free Resources`):**
+   - Filter by **Domain** (`Tech`, `Data`, `Design`, `Govt/Competitive Exams`, `Communication/Soft Skills`), **Format** (`Text/Docs`, `Interactive`, `Video`), **Language**, **Data Usage** (`Low Data` / `Moderate`), and search keywords.
+   - Displays `100% Free` and data-usage badges, why recommended, `"Save to My Plan"`, and `"Report broken link"` (`POST /api/report`).
+7. **My Saved Plan & Cross-Device Share Codes (`My Saved Plan`):**
+   - Stores bookmarked resources and checked milestones in `localStorage`.
+   - Exports cleanly as **Plain Text (WhatsApp)**, **Markdown**, `.txt`/`.md` downloads, `wa.me` share links, or 6-character cross-device share codes (`/p/:code`) backed by Supabase (`shared_plans`).
+
+---
+
+## Project Structure
+
+```text
+pathiq/
+├── server.js                      # HTTP server (gzip, ETag, rate limiting, REST API, /p/:code routing)
+├── lib/
+│   ├── doubtSolver.js             # @google/genai Interactions API + cache-aside + fallback solver
+│   ├── guidanceEngine.js          # Optional AI-enhanced career guidance adapter
+│   └── supabaseRepo.js            # Server-side Supabase repository with in-memory fallback
+├── supabase/
+│   ├── migrations/001_init.sql    # Postgres schema + Row Level Security (RLS) policies
+│   └── seed.js                    # CLI script to seed curated resources into Supabase
+├── public/
+│   ├── index.html                 # Semantic HTML5 shell + sidebar + 4 views
+│   ├── sw.js                      # Lightweight offline shell Service Worker
+│   ├── css/styles.css             # Lightweight responsive CSS + [data-lite="true"] rules
+│   ├── data/                      # Multilingual UI strings, career paths & free resources
+│   └── js/                        # Vanilla ES modules (dashboardView, qaView, directoryView, savedPlanView, etc.)
+└── tests/sanity.test.js           # Node test runner suite (15 tests across all features)
+```
+
+---
 
 ## Setup & Running Locally
 
@@ -28,18 +70,47 @@ npm start
 
 Open `http://127.0.0.1:3000`.
 
-### Supabase Setup (Optional; local fallback works out of the box)
-1. Run [`supabase/migrations/001_init.sql`](supabase/migrations/001_init.sql) in your Supabase SQL Editor (creates `resources`, `doubt_cache`, `shared_plans`, `doubt_feedback`, and `resource_reports` with RLS enabled).
-2. Add `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` to `.env`.
-3. Seed the curated free resources:
+### Supabase Secrets Integration (Optional — local fallback works out of the box)
+All Supabase credentials stay strictly on the Node.js server; never expose `SUPABASE_SERVICE_ROLE_KEY` in `public/`.
+1. Open your Supabase project's **SQL Editor** and execute [`supabase/migrations/001_init.sql`](supabase/migrations/001_init.sql). This creates `resources`, `doubt_cache`, `shared_plans`, `doubt_feedback`, and `resource_reports` with **Row Level Security (RLS)** enabled.
+2. In **Supabase → Project Settings → API**, copy **Project URL** and the **`service_role` secret key** into `.env`:
+   ```env
+   SUPABASE_URL=https://your-project-ref.supabase.co
+   SUPABASE_SERVICE_ROLE_KEY=your-service-role-secret
+   ```
+3. Seed the verified free resources table:
    ```bash
    npm run db:seed
    ```
 
-### Gemini Doubt Solver Setup (Optional; offline fallback works out of the box)
-Add `GEMINI_API_KEY` to `.env` and restart `npm start`.
+### Gemini API Key Integration (Optional — offline fallback works out of the box)
+1. Generate an API key in Google AI Studio (`https://aistudio.google.com/`).
+2. Add it to `.env` (already git-ignored):
+   ```env
+   GEMINI_API_KEY=your-gemini-api-key
+   ```
+3. Start the server (`npm start`) and check `GET /api/health`—it will report `"mode": "hybrid-ai"` and `"db": "supabase"` once both integrations are active.
 
-## Sanity Tests
+*(When deploying to Render, Railway, Fly.io, or a VPS, configure `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, and `GEMINI_API_KEY` in the platform's Environment Variables panel instead of committing `.env`.)*
+
+---
+
+## API Endpoints
+
+| Method & Path | Description |
+| :--- | :--- |
+| `GET /api/health` | Server health, active AI mode, database backend, and doubt solver model names |
+| `GET /api/resources` | Filter curated free resources (`domain`, `format`, `language`, `dataUsage`, `search`) |
+| `POST /api/guidance` | Returns 5-part localized structured career roadmap paced by `stage` and `weeklyHours` |
+| `POST /api/doubt` | Solves study/code/exam doubts via `gemini-3.5-flash-lite` / `gemini-4-hydrogen` + cache |
+| `POST /api/plans` | Creates a 6-character cross-device share code for a saved plan |
+| `GET /api/plans/:code` | Restores a shared plan by code (`/p/:code` opens directly in browser) |
+| `POST /api/feedback` | Records helpfulness rating (`helpful: boolean`) for a solved doubt |
+| `POST /api/report` | Submits a broken or paywalled resource link report |
+
+---
+
+## Verification & Sanity Tests
 
 ```bash
 npm test
