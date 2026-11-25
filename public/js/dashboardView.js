@@ -156,10 +156,18 @@ export function createDashboardView({ container, store, onOpenPath, onQuickDoubt
     const pathsSec = el('section', 'dash-section');
     const pathsHead = el('div', 'dash-sec-head');
     pathsHead.appendChild(el('h3', 'dash-sec-title', t(lang, 'dashYourPaths')));
+    const pathsHeadActions = el('div', 'dash-head-actions');
+    const demoBtn = el('button', 'link-btn', t(lang, 'loadDemoBtn'));
+    demoBtn.type = 'button';
+    demoBtn.addEventListener('click', () => {
+      store.loadMockData();
+      showToast(t(store.getState().lang, 'demoLoadedToast'));
+    });
     const viewAllBtn = el('button', 'link-btn', t(lang, 'dashViewAll'));
     viewAllBtn.type = 'button';
     viewAllBtn.addEventListener('click', () => store.update({ activeTab: 'guidance' }));
-    pathsHead.appendChild(viewAllBtn);
+    pathsHeadActions.append(demoBtn, viewAllBtn);
+    pathsHead.appendChild(pathsHeadActions);
     pathsSec.appendChild(pathsHead);
 
     const coursesRow = el('div', 'dash-courses-grid');

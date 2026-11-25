@@ -216,7 +216,14 @@ export function createSavedPlanView({ container, store, showToast }) {
       goDir.type = 'button';
       goDir.addEventListener('click', () => store.update({ activeTab: 'directory' }));
 
-      navBtns.append(goGuide, goDir);
+      const loadDemo = el('button', 'btn btn-outline', t(lang, 'loadDemoBtn'));
+      loadDemo.type = 'button';
+      loadDemo.addEventListener('click', () => {
+        store.loadMockData();
+        showToast(t(lang, 'demoLoadedToast'));
+      });
+
+      navBtns.append(goGuide, goDir, loadDemo);
       emptyBox.append(navBtns, makeLoadCodeBar(lang));
       container.appendChild(emptyBox);
       return;
@@ -292,7 +299,14 @@ export function createSavedPlanView({ container, store, showToast }) {
       showToast(t(lang, 'clearedToast'));
     });
 
-    exportActions.append(copyPlainBtn, copyMdBtn, waLink, dlTxtBtn, dlMdBtn, shareCodeBtn, clearBtn);
+    const loadDemoBtn = el('button', 'btn btn-outline', t(lang, 'loadDemoBtn'));
+    loadDemoBtn.type = 'button';
+    loadDemoBtn.addEventListener('click', () => {
+      store.loadMockData();
+      showToast(t(lang, 'demoLoadedToast'));
+    });
+
+    exportActions.append(copyPlainBtn, copyMdBtn, waLink, dlTxtBtn, dlMdBtn, shareCodeBtn, clearBtn, loadDemoBtn);
 
     const previewPre = el('pre', 'export-preview', plainText);
     exportBlock.append(exportActions, previewPre);

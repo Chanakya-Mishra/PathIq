@@ -1,3 +1,5 @@
+import { getMockStudentData } from '../data/mockStudentData.js';
+
 const STORAGE_KEY = 'pathiq_state_v1';
 const MAX_QA_CACHE = 20;
 
@@ -99,6 +101,11 @@ export function createStore(storage = getDefaultStorage()) {
         savedResourceIds: [],
         completedSteps: {}
       });
+    },
+
+    loadMockData(customMock) {
+      const mock = customMock || getMockStudentData();
+      return this.update(mock);
     }
   };
 }

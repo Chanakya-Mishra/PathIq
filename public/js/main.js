@@ -118,6 +118,24 @@ if (liteToggle) {
 }
 
 store.subscribe(syncShell);
+
+// Auto-seed realistic mock student data on first visit or via ?demo=1 / ?mock=1 parameter
+try {
+  const urlParams = new URLSearchParams(window.location.search);
+  const forceDemo =
+    urlParams.get('demo') === 'true' ||
+    urlParams.get('demo') === '1' ||
+    urlParams.get('mock') === 'true' ||
+    urlParams.get('mock') === '1';
+  const SEED_KEY = 'pathiq_mock_seeded_v1';
+  if (forceDemo || !window.localStorage.getItem(SEED_KEY)) {
+    store.loadMockData();
+    window.localStorage.setItem(SEED_KEY, 'true');
+  }
+} catch {
+  // Graceful fallback if localStorage is disabled or restricted
+}
+
 syncShell(store.getState());
 if (dashboardView) dashboardView.init();
 if (guidanceView) guidanceView.init();

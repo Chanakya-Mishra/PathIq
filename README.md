@@ -18,6 +18,8 @@ A fast, low-data, zero-login **Student Learning Dashboard**, **Multilingual Care
    - Responsive sidebar layout on desktop (collapsing cleanly into a sticky mobile nav strip).
    - Welcome banner with live goal completion percentage and a quick Doubt Solver launchpad.
    - **Active Learning Path Cards**, a pure-CSS **Progress Statistic Donut**, horizontal **Learning Progress** bars synced to `localStorage` milestones, and an interactive **Study Schedule Calendar** for marking local study days.
+   - **Preloaded Realistic Mock Student Data:** Automatically seeds on initial visit (or via `?demo=1`) with active career progress, verified free resources, and study days so the dashboard is interactive and colorful immediately. Includes a one-tap **"Load Sample Data"** action.
+   - **Bulletproof Responsive Layout:** Flexbox `min-width: 0` title truncation, `flex-shrink: 0` percentage protection (no clipped `%` or text collision), card boundary isolation, and an adaptive tablet utility grid (640px–1139px).
 2. **Top-Level Multilingual Switcher:**
    - Instant header switching across **English (`en`)**, **Hindi (`hi`)**, **Tamil (`ta`)**, and **Bengali (`bn`)**, updating `<html lang>`, UI labels, starter questions, roadmaps, and resource notes (`localStorage`-persisted).
 3. **Lite Mode (Low Data Toggle):**
@@ -34,6 +36,34 @@ A fast, low-data, zero-login **Student Learning Dashboard**, **Multilingual Care
 7. **My Saved Plan & Cross-Device Share Codes (`My Saved Plan`):**
    - Stores bookmarked resources and checked milestones in `localStorage`.
    - Exports cleanly as **Plain Text (WhatsApp)**, **Markdown**, `.txt`/`.md` downloads, `wa.me` share links, or 6-character cross-device share codes (`/p/:code`) backed by Supabase (`shared_plans`).
+
+---
+
+## Interactive Demo & Mock Data Profile
+
+To ensure evaluators and new learners experience an engaging, vibrant dashboard rather than an empty 0% state, PathIQ includes a rich, pre-configured **Mock Student Profile** ([`public/data/mockStudentData.js`](public/data/mockStudentData.js)):
+
+- **Active Milestones:** Pre-checked steps in Web Development (50%), Post-12th Career & Scholarships (33%), Portfolio Building (67%), and Data Analytics (25%), rendering a multi-color **Progress Statistic Donut (~43% completed)** and populated horizontal progress tracks.
+- **Dynamic Study Calendar:** 7 active study days dynamically mapped to the user's current month and year so the calendar always shows realistic consistency.
+- **Bookmarked Resources:** Pre-saved free resources (freeCodeCamp, National Scholarship Portal, SWAYAM/NPTEL, MDN Web Docs, OpenStax).
+- **Cached Doubt Guidance:** Pre-cached guidance answering *"How do I start in tech with zero paid courses?"*.
+- **How to Load or Reset:**
+  - **Auto-Seed on First Visit:** Automatically populates on first browser load.
+  - **One-Tap UI Action:** Tap **"Load Sample Data"** in the Dashboard header or **"My Saved Plan"** anytime.
+  - **URL Parameter:** Open `http://127.0.0.1:3000/?demo=1` or `?mock=1`.
+  - **Reset:** Tap **"Clear Saved Plan"** in My Saved Plan to start from a blank canvas.
+
+---
+
+## Responsive Layout & Anti-Overlap Engineering
+
+- **Flex Item Bounds:** Applied `min-width: 0;` on `.dash-bar-name` to ensure long roadmap titles cleanly truncate with `text-overflow: ellipsis` on narrow screens rather than pushing the progress percentage outside the card.
+- **Percentage Anchor:** Added `flex-shrink: 0; font-variant-numeric: tabular-nums;` to `.dash-bar-pct` so completion numbers (e.g. `0%`, `100%`) never get clipped, squashed, or collide with borders.
+- **Card Boundary Isolation:** All dashboard panel cards enforce `min-width: 0; overflow: hidden;` to prevent child content from forcing grid cells to overlap adjacent columns.
+- **Adaptive Breakpoints:**
+  - `Desktop (>= 1140px)`: 2-column layout (main dashboard + 280px utility rail).
+  - `Tablet (640px – 1139px)`: Multi-column responsive utility rail grid positioned underneath main content.
+  - `Mobile (< 640px)`: Vertical card stacking with centered donut ring and full-width touch-friendly controls.
 
 ---
 
